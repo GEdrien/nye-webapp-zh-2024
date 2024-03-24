@@ -4,5 +4,20 @@ export interface Item {
 }
 
 export const uniqueFilter = (array: Item[]): Item[] => {
-  throw new Error('Not implemented');
+  const indexes = new Array();
+  let isNotDuplicated : boolean;
+  const result = array.filter((element) => {
+    isNotDuplicated = true;
+    for(let i = 0; i < indexes.length; i++){
+      if(indexes[i] == element.id){
+        isNotDuplicated = false;
+      }
+    }
+    if( isNotDuplicated ) {
+      indexes.push(element.id)
+    }
+    return isNotDuplicated;
+  });
+
+  return result;
 };
