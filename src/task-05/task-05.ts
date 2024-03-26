@@ -7,7 +7,6 @@ export const searchMovies = async (params: SearchParams): Promise<SearchResults>
     movies: []
   };
 
-  async function fetchMovies() {
     try {
       const movies = await MovieService.getMovies();
       
@@ -38,9 +37,9 @@ export const searchMovies = async (params: SearchParams): Promise<SearchResults>
             const movie2Vote = movie2.vote_average ? movie2.vote_average : 0;
             sortResult = movie1Vote - movie2Vote;
           } else if (order == "release_date"){
-            const movie1Date = movie1.release_date ? movie1.release_date : "";
-            const movie2Date = movie2.release_date ? movie2.release_date : "";
-            sortResult = movie1Date.toLocaleString().localeCompare(movie2Date.toLocaleString());
+            const movie1Date = movie1.release_date ? movie1.release_date : new Date();
+            const movie2Date = movie2.release_date ? movie2.release_date : new Date();
+            movie1Date > movie2Date ? sortResult = 1 : sortResult = -1;
           }
           return direction === 'ASC' ? sortResult : -sortResult;
         });
@@ -54,16 +53,12 @@ export const searchMovies = async (params: SearchParams): Promise<SearchResults>
       
       finalResult.movies = byQuery.slice(offset, actualLimit);
 
+      return finalResult;
+
     } catch (error) {
       console.log('Error fetching movies:', error);
+      finalResult.total = 0;
+      finalResult.movies = [];
+      return finalResult;
     }
-  }
-
-  fetchMovies();
-
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(finalResult);
-    }, 1000); 
-  });
 };
